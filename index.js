@@ -2,11 +2,11 @@ if (localStorage.getItem("transcripts") !== null) {
     localStorage.removeItem("transcripts");
 }
 
-let transcriptArray = [];
-
+const transcriptArray = JSON.parse(localStorage.getItem("transcripts")) || [];
 
 function checkTranscripts() {
-    const transcripts = temp1.contentWindow.document.querySelectorAll('.ui-chat__item');
+    const iframe = document.querySelector('iframe');
+    const transcripts = iframe.contentWindow.document.querySelectorAll('.ui-chat__item');
     transcripts.forEach(transcript => {
         const ID = transcript.querySelector('.fui-Flex > .ui-chat__message').id;
         const Name = transcript.querySelector('.ui-chat__message__author').innerText;
@@ -21,7 +21,7 @@ function checkTranscripts() {
                 transcriptArray[index] = { Name, Text, Time, ID };
             }
         } else {
-            console.log({ Name, Text, Time, ID });
+            // console.log({ Name, Text, Time, ID });
             // Add new transcript
             transcriptArray.push({ Name, Text, Time, ID });
         }
@@ -30,14 +30,12 @@ function checkTranscripts() {
     localStorage.setItem('transcripts', JSON.stringify(transcriptArray));
 }
 
-
 const observer = new MutationObserver(checkTranscripts);
 observer.observe(document.body, { childList: true, subtree: true });
 
 setInterval(checkTranscripts, 10000);
 
-
-
+// Download YAML
 function downloadYAML() {
     let transcripts = JSON.parse(localStorage.getItem('transcripts'));
     // Remove IDs
@@ -62,3 +60,6 @@ function downloadYAML() {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
+
+// Let's download the YAML
+// downloadYAML();
